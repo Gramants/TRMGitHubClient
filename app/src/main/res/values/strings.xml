@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TRMG client</string>
+    <string name="logging">Loggin in...</string>
+    <string name="check_internet">Please check your internet connection!</string>
+    <string name="login_ok">Login succesfull</string>
+    <string name="no_connection">Please check your internet connection!</string>
+    <string name="noreposfound">No data to show</string>
+    <string name="reposfound">You have %1$s repos</string>
+</resources>
