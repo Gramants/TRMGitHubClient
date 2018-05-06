@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityView,
     RecyclerView rvRepoList;
     @BindView(R.id.text_status)
     TextView statusText;
+    @BindView(R.id.delete_all)
+    TextView deleteAll;
 
     private RepoListAdapter repoAdapter;
 
@@ -108,7 +110,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView,
             }
         });
 
-
+        deleteAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    presenter.deleteAll();
+            }
+        });
     }
 
     private void showGetReposUI(boolean show) {
@@ -185,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView,
 
     @Override
     public void clearResults() {
-
+        repoAdapter.clearAll();
     }
 
     @Override
@@ -193,12 +200,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityView,
         statusMessage(getString(R.string.reposfound, String.valueOf(list.size())));
         Collections.sort(list, new Utils.CustomComparator());
         showGetReposUI(false);
+        deleteAll.setVisibility(View.VISIBLE);
         repoAdapter.updateRepoList(list);
     }
 
     @Override
     public void setNoResult() {
         statusMessage(getString(R.string.noreposfound));
+        deleteAll.setVisibility(View.INVISIBLE);
     }
 
 

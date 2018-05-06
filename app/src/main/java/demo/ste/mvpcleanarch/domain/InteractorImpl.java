@@ -2,6 +2,7 @@ package demo.ste.mvpcleanarch.domain;
 
 import java.util.List;
 
+import demo.ste.mvpcleanarch.data.database.DeleteRecords;
 import demo.ste.mvpcleanarch.data.database.ProjectDb;
 import demo.ste.mvpcleanarch.data.database.RepoDao;
 import demo.ste.mvpcleanarch.data.database.UpdateRecords;
@@ -93,6 +94,24 @@ public class InteractorImpl implements Interactor {
 
         };
 
+    }
+
+    @Override
+    public void deleteAllUseCase() {
+        new DeleteRecords() {
+
+            @Override
+            protected void deleteRecords() {
+                projectDb.beginTransaction();
+                try {
+                    repoDao.deleteAll();
+                    projectDb.setTransactionSuccessful();
+                } finally {
+                    projectDb.endTransaction();
+                }
+            }
+
+        };
     }
 
 

@@ -43,7 +43,6 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Interac
     }
 
     private void loadAllReposFromDb() {
-        mainActivityView.clearResults();
         Disposable disposable = interactor.loadReposFromDb()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -107,6 +106,12 @@ public class MainActivityPresenterImpl implements MainActivityPresenter, Interac
     @Override
     public void getResultFromDb() {
         onAttach();
+    }
+
+    @Override
+    public void deleteAll() {
+        mainActivityView.clearResults();
+        interactor.deleteAllUseCase();
     }
 
 }

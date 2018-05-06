@@ -19,7 +19,7 @@ public interface Interactor {
 
     void updateDb(List<RepoResponseDbEntity> data);
 
-
+    void deleteAllUseCase();
 
 
     interface DatafromServer {

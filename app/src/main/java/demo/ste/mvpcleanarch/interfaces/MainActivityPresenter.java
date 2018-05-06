@@ -8,4 +8,6 @@ public interface MainActivityPresenter {
     void doFetchAllRepos(String userName);
 
     void getResultFromDb();
+
+    void deleteAll();
 }

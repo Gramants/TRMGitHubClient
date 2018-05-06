@@ -19,6 +19,11 @@ public class RepoListAdapter extends RecyclerView.Adapter<RepoListAdapter.ViewHo
     private final List<RepoResponseDbEntity> items;
     private final OnItemClickListener listener;
 
+    public void clearAll() {
+        this.items.clear();
+        notifyDataSetChanged();
+    }
+
 
     public interface OnItemClickListener {
         void onItemClick(RepoResponseDbEntity item);
