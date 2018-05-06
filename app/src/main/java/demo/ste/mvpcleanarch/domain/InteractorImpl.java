@@ -35,7 +35,7 @@ public class InteractorImpl implements Interactor {
 
     @Override
     public void fetchAllReposUseCase(DatafromServer datafromServer, String userName) {
-        getReposObservable(userName)
+        api.getAllRepos("application/json", userToken, "application/json", userName)
                 .flatMap(list ->
                         Observable.fromIterable(list)
                                 .map(new Function<RepoResponse, RepoResponseDbEntity>() {
@@ -50,42 +50,11 @@ public class InteractorImpl implements Interactor {
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getReposObserver(datafromServer));
+                .subscribe(repos -> datafromServer.onGetRepoFromRemote(repos), error -> datafromServer.setError(error.getLocalizedMessage()), () -> {
+                });
 
     }
 
-
-    public Observable<List<RepoResponse>> getReposObservable(String userName) {
-        return api.getAllRepos("application/json", userToken, "application/json", userName);
-    }
-
-
-    private Observer<List<RepoResponseDbEntity>> getReposObserver(DatafromServer datafromServer) {
-        return new Observer<List<RepoResponseDbEntity>>() {
-
-            @Override
-            public void onError(Throwable e) {
-                datafromServer.setError(e.getLocalizedMessage());
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(List<RepoResponseDbEntity> repos) {
-                datafromServer.onGetRepoFromRemote(repos);
-            }
-
-        };
-    }
 
     @Override
     public Flowable<List<RepoResponseDbEntity>> loadReposFromDb() {
@@ -99,10 +68,12 @@ public class InteractorImpl implements Interactor {
 
     @Override
     public void doLoginUseCase(DatafromServer datafromServer, String userName, String password) {
-        getLoginObservable(userName, password)
+        this.userToken = Credentials.basic(userName, password);
+        api.doLogin("application/json", userToken, "application/json")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getLoginObserver(datafromServer));
+                .subscribe(loginResp -> datafromServer.onLogin(loginResp), error -> datafromServer.setError(error.getLocalizedMessage()), () -> {
+                });
     }
 
     @Override
@@ -122,39 +93,6 @@ public class InteractorImpl implements Interactor {
 
         };
 
-    }
-
-
-    public Observable<LoginResponse> getLoginObservable(String userName, String password) {
-        this.userToken = Credentials.basic(userName, password);
-        return api.doLogin("application/json", userToken, "application/json");
-
-    }
-
-    public Observer<LoginResponse> getLoginObserver(final DatafromServer datafromServer) {
-        return new Observer<LoginResponse>() {
-
-            @Override
-            public void onError(Throwable e) {
-                datafromServer.setError(e.getLocalizedMessage());
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(LoginResponse apiResponseModel) {
-                datafromServer.onLogin(apiResponseModel);
-            }
-        };
     }
 
 
